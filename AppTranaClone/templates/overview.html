@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Wira Wahyu - Overview</title>
+    <style>
+        /* Styles for the header bar */
+        .header-bar {
+            background-color: #210053; /* Blue background */
+            color: white; /* White text */
+            padding: 15px; /* Padding around the text */
+            border-radius: 5px; /* Rounded corners */
+            margin-bottom: 20px; /* Space below the header */
+            text-align: left; /* Align text to the left */
+        }
+
+        .header-bar h1 {
+            font-size: 30px; /* Adjust font size to make it smaller */
+            margin: 0; /* Remove default margin */
+        }
+
+        /* Styles for the content area */
+        .content {
+            padding: 20px;
+            margin-left: 220px; /* Adjust according to sidebar width */
+        }
+
+        /* Dashboard boxes */
+        .dashboard-container {
+            display: flex; /* Use flexbox for horizontal layout */
+            justify-content: space-between; /* Space between boxes */
+            margin-bottom: 20px; /* Space below dashboard boxes */
+        }
+
+        .dashboard-box {
+            flex: 1; /* Allow boxes to grow equally */
+            padding: 20px;
+            margin-right: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-box:last-child {
+            margin-right: 0; /* Remove margin for last box */
+        }
+
+        /* Make Attack Trend box larger */
+        .attack-trend-box {
+            flex: 2; /* Allow this box to take twice as much space as others */
+        }
+
+        canvas {
+            max-width: 100%; /* Responsive chart width */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+        /* Styles for large numbers */
+        .large-number {
+            font-size: 48px; /* Increase font size for visibility */
+            font-weight: bold; /* Make numbers bold */
+        }
+        
+        .total-traffic {
+            color: green; /* Green color for total traffic */
+        }
+
+        .blocked-ips {
+            color: red; /* Red color for blocked IPs */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Wira Wahyu</h2>
+        <ul>
+            <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Dashboard</a></li>
+            <li><a href="{{ url_for('overview') }}" class="{% if request.endpoint == 'overview' %}active{% endif %}">Overview</a></li>
+            <li><a href="{{ url_for('monitor') }}" class="{% if request.endpoint == 'monitor' %}active{% endif %}">Monitor</a></li>
+            <li><a href="{{ url_for('settings') }}" class="{% if request.endpoint == 'settings' %}active{% endif %}">Settings</a></li>
+            <li><a href="{{ url_for('manage') }}" class="{% if request.endpoint == 'manage' %}active{% endif %}">Manage</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <!-- Header Bar for Overview -->
+        <div class="header-bar">
+            <h1>Overview Dashboard</h1>
+        </div>
+
+        <!-- Dashboard Statistics -->
+        <div class="dashboard-container">
+            <div class="dashboard-box">
+                <h2>Total Traffic</h2>
+                <p id="totalTraffic" class="large-number total-traffic">{{ total_requests }}</p> <!-- Green color -->
+            </div>
+
+            <div class="dashboard-box">
+                <h2>Blocked IPs</h2>
+                <p id="blockedIPs" class="large-number blocked-ips">{{ blocked_ips_count }}</p> <!-- Red color -->
+            </div>
+
+            <div class="dashboard-box attack-trend-box"> <!-- Added specific class for attack trend -->
+                <h2>Attack Trend</h2>
+                <canvas id="attackTrendChart"></canvas> <!-- Canvas for Chart.js -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- JavaScript to fetch updated data and render the chart -->
+    <script type="text/javascript">
+        let attackTrendChart;
+
+        function fetchOverviewData() {
+            fetch('/fetch-overview-data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalTraffic').innerText = data.total_requests;
+                    document.getElementById('blockedIPs').innerText = data.blocked_ips_count;
+
+                    // Update Attack Trend Chart
+                    const ctx = document.getElementById('attackTrendChart').getContext('2d');
+                    if (attackTrendChart) {
+                        attackTrendChart.destroy(); // Destroy previous instance before creating a new one
+                    }
+                    
+                    attackTrendChart = new Chart(ctx, {
+                        type: 'line', // Change chart type to line
+                        data: {
+                            labels: data.attack_types, // Attack types (e.g., SQL Injection, XSS)
+                            datasets: [{
+                                label: 'Number of Attacks',
+                                data: data.attack_counts, // Count of attacks by type
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: true,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        max: Math.max(...data.attack_counts) || 1000, // Set max dynamically based on data
+                                        stepSize: Math.ceil((Math.max(...data.attack_counts) || 100) / 10) // Dynamic step size
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching overview data:', error));
+        }
+
+        // Fetch overview data every X seconds (e.g., every 5 seconds)
+        setInterval(fetchOverviewData, 3000);
+        
+        // Initial fetch
+        fetchOverviewData();
+    </script>
+
+</body>
+</html>

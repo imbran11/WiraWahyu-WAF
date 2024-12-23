@@ -1,0 +1,46 @@
+IP Address,Action,Reason,Timestamp,Blocked IP
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:08,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:08,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:10,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:10,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:10,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:10,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:13,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:13,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:13,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:13,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:13,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:13,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:13,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:15,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:15,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:15,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:15,No
+192.0.2.106,Blocked,Cross-Site Scripting (XSS) Attempt,2024-12-22 20:23:15,Yes
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:17,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:17,No
+192.0.2.182,Blocked,SQL Injection Attempt,2024-12-22 20:23:17,Yes
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:18,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:18,No
+192.0.2.176,Blocked,Malicious Bot Activity,2024-12-22 20:23:18,Yes
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:21,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:21,No
+192.0.2.178,Blocked,Cross-Site Scripting (XSS) Attempt,2024-12-22 20:23:21,Yes
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:22,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:22,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:27,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:27,No
+192.0.2.179,Blocked,Unusual Traffic Patterns,2024-12-22 20:23:27,Yes
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:28,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:28,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:29,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:29,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:29,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:29,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:29,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:29,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:29,No
+192.0.2.176,Blocked,SQL Injection Attempt,2024-12-22 20:23:29,Yes
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:33,No
+127.0.0.1,Accessed,Normal Traffic,2024-12-22 20:23:33,No
+192.0.2.170,Blocked,Brute Force Attack,2024-12-22 20:23:33,Yes

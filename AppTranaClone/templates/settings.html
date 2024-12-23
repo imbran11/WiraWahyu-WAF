@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Wira Wahyu - Settings</title>
+    <style>
+        /* Styles for the header bar */
+        .header-bar {
+            background-color: #210053; /* Blue background */
+            color: white; /* White text */
+            padding: 15px; /* Padding around the text */
+            border-radius: 5px; /* Rounded corners */
+            margin-bottom: 20px; /* Space below the header */
+            text-align: left; /* Align text to the left */
+        }
+
+        .header-bar h1 {
+            font-size: 30px; /* Adjust font size to make it smaller */
+            margin: 0; /* Remove default margin */
+        }
+
+        /* Styles for the content area */
+        .content {
+            padding: 20px;
+            margin-left: 220px; /* Adjust according to sidebar width */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Wira Wahyu</h2>
+        <ul>
+            <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Dashboard</a></li>
+            <li><a href="{{ url_for('overview') }}" class="{% if request.endpoint == 'overview' %}active{% endif %}">Overview</a></li>
+            <li><a href="{{ url_for('monitor') }}" class="{% if request.endpoint == 'monitor' %}active{% endif %}">Monitor</a></li>
+            <li><a href="{{ url_for('settings') }}" class="{% if request.endpoint == 'settings' %}active{% endif %}">Settings</a></li>
+            <li><a href="{{ url_for('manage') }}" class="{% if request.endpoint == 'manage' %}active{% endif %}">Manage</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <!-- Header Bar for Settings -->
+        <div class="header-bar">
+            <h1>Settings</h1>
+        </div>
+</body>
+</html>

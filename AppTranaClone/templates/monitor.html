@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+   <title>Wira Wahyu - Monitor</title>
+   <style>
+    /* Styles for the header bar */
+    .header-bar {
+        background-color: #210053; /* Blue background */
+        color: white; /* White text */
+        padding: 15px; /* Padding around the text */
+        border-radius: 5px; /* Rounded corners */
+        margin-bottom: 20px; /* Space below the header */
+        text-align: left; /* Align text to the left */
+    }
+
+    .header-bar h1 {
+        font-size: 30px; /* Adjust font size to make it smaller */
+        margin: 0; /* Remove default margin */
+    }
+
+    /* Styles for the content area */
+    .content {
+        padding: 20px;
+        margin-left: 220px; /* Adjust according to sidebar width */
+    }
+
+    /* Styles for the input field */
+    .search-input {
+        width: 300px;
+        padding: 10px;
+        border: 2px solid #4CAF50; /* Green border */
+        border-radius: 5px; /* Rounded corners */
+        font-size: 16px; /* Font size */
+        transition: border-color 0.3s; /* Smooth transition */
+    }
+
+    .search-input:focus {
+        border-color: #2E7D32; /* Darker green on focus */
+        outline: none; /* Remove default outline */
+    }
+
+    /* Styles for the button */
+    .scan-button {
+        padding: 10px 20px;
+        background-color: #4CAF50; /* Green background */
+        color: white; /* White text */
+        border: none; /* No border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor on hover */
+        font-size: 16px; /* Font size */
+        transition: background-color 0.3s; /* Smooth transition */
+    }
+
+    .scan-button:hover {
+        background-color: #388E3C; /* Darker green on hover */
+    }
+
+    /* Styles for the result section */
+    .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f9f9f9; /* Light gray background */
+        box-shadow: 0 2px 5px rgba(0,0,0,.1); /* Subtle shadow */
+    }
+
+    .result h2 {
+        color: black; /* Black color for heading */
+    }
+
+    .url-box {
+        display: inline-block;
+        margin-left: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #c8e6c9; /* Light green background for URL box */
+        color: black; /* Black text color for URL box */
+        font-size: 18px; /* Increase font size for better visibility */
+    }
+
+    .info-container {
+        display: flex; /* Use flexbox for horizontal layout */
+        margin-top: 10px;
+    }
+
+    .info-box {
+        margin-right: 10px; /* Space between boxes */
+        padding: 15px; /* Increased padding for larger boxes */
+        border-radius: 5px;
+        background-color: #bbdefb; /* Light blue background for info boxes */
+        color: black; /* Black text color for info boxes */
+        box-shadow: 0 1px 3px rgba(0,0,0,.2); /* Subtle shadow for depth */
+        flex-grow: 1; /* Allow boxes to grow and take equal space */
+        min-width: 150px; /* Minimum width for each info box */
+    }
+
+    .blocked-ips-container {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #ffebee; /* Light red background for blocked IPs section */
+        box-shadow: 0 2px 5px rgba(0,0,0,.1);
+    }
+
+    .blocked-ip-box {
+        margin-top: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #ffcdd2; /* Lighter red background for individual blocked IPs */
+        color: black;
+        box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+
+    .logs-container {
+    display: flex; /* Use flexbox for layout */
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    margin-top: 20px;
+}
+
+.log-box {
+    padding: 10px; /* Reduced padding for smaller boxes */
+    margin: 5px; /* Space between boxes */
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    width: calc(23% - 10px); /* Set width to fit four boxes in a row, accounting for margins */
+    box-sizing: border-box; /* Ensure padding and border are included in width */
+}
+
+.log-box.accessed {
+    background-color: #009905; /* Green background for accessed logs */
+}
+
+.log-box.blocked {
+    background-color: #bf2d00; /* Red background for blocked logs */
+}
+
+
+    /* Styles for buttons and other elements omitted for brevity... */
+
+    .refresh-button {
+        background-color: rgb(174, 174, 0); /* Yellow background for refresh button */
+    }
+
+    .refresh-button:hover {
+        background-color: rgb(255, 255, 58); /* Darker yellow on hover */
+        transform: scale(1.05);
+    }
+
+    .download-previous-button {
+        background-color: #ad6800; /* Orange background for download previous report button */
+    }
+
+    .download-previous-button:hover {
+        background-color: #ff9800; /* Darker orange on hover */
+        transform: scale(1.05);
+    }
+
+    .download-button {
+        padding: 12px 24px; /* Increase padding for a larger button */
+        border: none;
+        border-radius: 5px; /* Rounded corners */
+        background-color: #007bff; /* Bootstrap primary color */
+        color: white; /* Text color */
+        font-size: 16px; /* Font size */
+        cursor: pointer; /* Pointer cursor on hover */
+        transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+    }
+
+    .download-button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        transform: scale(1.05); /* Slightly enlarge on hover */
+    }
+
+    .download-button.active {
+        background-color: #004085; /* Even darker blue when clicked */
+        transform: scale(0.95); /* Slightly shrink when clicked */
+    }
+
+       .control-button {
+           padding: 10px 20px;
+           margin: 5px;
+           border: none;
+           border-radius: 5px;
+           color: white;
+           font-size: 16px;
+           cursor: pointer;
+           transition: background-color 0.3s, transform 0.1s; /* Smooth transition */
+       }
+
+       .control-button1 {
+           padding: 10px 20px;
+           margin: 5px;
+           border: none;
+           border-radius: 5px;
+           color: white;
+           font-size: 16px;
+           cursor: pointer;
+           transition: background-color 0.3s, transform 0.1s; /* Smooth transition */
+       }
+ 
+       .stop-button {
+           background-color: rgb(174, 47, 73); /* Red for Stop */
+       }
+ 
+       .stop-button:hover {
+           background-color: red; /* Darker red on hover */
+           transform: scale(1.05);
+       }
+ 
+       .stop-button.active {
+           background-color: red; /* Lighter red when clicked */
+           transform: scale(1.05);
+       }
+ 
+       .continue-button {
+           background-color: green; /* Green for Continue */
+       }
+ 
+       .continue-button:hover {
+           background-color: limegreen; /* Darker green on hover */
+           transform: scale(1.05);
+       }
+ 
+       .continue-button.active {
+           background-color: limegreen; /* Lighter green when clicked */
+           transform: scale(1.05);
+       }
+
+    
+   </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Wira Wahyu</h2>
+        <ul>
+            <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Dashboard</a></li>
+            <li><a href="{{ url_for('overview') }}" class="{% if request.endpoint == 'overview' %}active{% endif %}">Overview</a></li>
+            <li><a href="{{ url_for('monitor') }}" class="{% if request.endpoint == 'monitor' %}active{% endif %}">Monitor</a></li>
+            <li><a href="{{ url_for('settings') }}" class="{% if request.endpoint == 'settings' %}active{% endif %}">Settings</a></li>
+            <li><a href="{{ url_for('manage') }}" class="{% if request.endpoint == 'manage' %}active{% endif %}">Manage</a></li>
+        </ul>
+    </div>
+ 
+    <div class="content">
+        <!-- Header Bar for Monitor -->
+        <div class="header-bar">
+            <h1>Monitor</h1>
+        </div>
+ 
+     <!-- Scan Form -->
+<form method="POST" action="{{ url_for('monitor') }}">
+    <select name="url" required class="search-input">
+        <option value="" disabled selected>Wira Wahyu Enterprise</option>
+        <option value="http://localhost/Abe%20Din/">Wira Wahyu Enterprise</option>
+    </select>
+    <button type="submit" class="scan-button">Scan</button>
+</form>
+
+{% if scan_result %}
+<div class="result">
+    <h2>Scan Result for:
+        <div class="url-box">Wira Wahyu Enterprise</div> <!-- Display entered URL in a green box -->
+        {% if scan_result.error %}
+            <p>Error: {{ scan_result.error }}</p>
+        {% else %}
+    </h2>
+
+    <!-- Add a line break here -->
+    <br>
+
+    <!-- Individual boxes for each result in a horizontal layout -->
+    <div class="info-container">
+        <div class="info-box"><strong>Status Code:</strong> {{ scan_result.status_code }}</div>
+        <div class="info-box"><strong>Content Length:</strong> {{ scan_result.content_length }} bytes</div>
+        <!-- Add more info boxes as needed -->
+        <div class="info-box"><strong>Action:</strong> {{ scan_result.action }}</div>
+        <div class="info-box"><strong>Reason:</strong> {{ scan_result.reason }}</div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- Blocked IPs Display -->
+{% if blocked_ips %}
+<div class="blocked-ips-container">
+    <h3>Blocked IP Addresses:</h3>
+    {% for ip in blocked_ips %}
+        <div class="blocked-ip-box">{{ ip }}</div> <!-- Display each blocked IP in a lighter red box -->
+    {% endfor %}
+</div><br>
+{% endif %}
+
+
+       <!-- Control Buttons for Scanning -->
+       <button id="stopScanning" class="control-button stop-button" onclick="stopScanning()">Stop Scanning</button>
+       <button id="continueScanning" class="control-button continue-button" onclick="continueScanning()">Continue Scanning</button>
+
+       <!-- Refresh Button -->
+       <form action="{{ url_for('reset') }}" method="post" style="display:inline;">
+           <button type="submit" class="control-button refresh-button">Refresh</button>
+       </form>
+
+       <!-- Download Previous Report Button -->
+       <form action="{{ url_for('download_previous_report') }}" method="get" style="display:inline;">
+            <button type="submit" class="control-button download-previous-button">Download Previous Report</button>
+       </form><br>
+
+       <h1>Traffic:</h1>
+
+ 
+      <!-- Logs Display -->
+<div class="logs-container">
+    {% for log in logs %}
+        <div class="log-box {% if log.action == 'Blocked' %}blocked{% else %}accessed{% endif %}">
+            <p><strong>IP Address:</strong> {{ log.ip }}</p>
+            <p><strong>Action:</strong> {{ log.action }}</p>
+            <p><strong>Reason:</strong> {{ log.reason }}</p>
+            <p><strong>Date & Time:</strong> {{ log.timestamp }}</p>
+        </div>
+    {% endfor %}
+</div><br>
+
+ 
+       
+       <!-- Control Buttons for Scanning -->
+       <button id="stopScanning" class="control-button stop-button" onclick="stopScanning()">Stop Scanning</button>
+       <button id="continueScanning" class="control-button continue-button" onclick="continueScanning()">Continue Scanning</button>
+       
+
+  <!-- Download Button -->
+  <form action="{{ url_for('download_log') }}" method="get" style="display:inline;">
+    <button type="submit" class="submit-button download-button">Download Report</button>
+</form>
+ 
+    </div>
+    
+ 
+    <!-- JavaScript to fetch logs continuously -->
+    <script type="text/javascript">
+       let scanning = true;
+ 
+       function fetchLogs() {
+           if (scanning) {
+               fetch('/fetch-logs') // Replace with your endpoint that returns logs
+                   .then(response => response.json())
+                   .then(data => {
+                       const logsContainer = document.querySelector('.logs-container');
+                       logsContainer.innerHTML = ''; // Clear existing logs
+                       data.logs.forEach(log => {
+                           const logBox = document.createElement('div');
+                           logBox.className = `log-box ${log.action === 'Blocked' ? 'blocked' : 'accessed'}`;
+                           logBox.innerHTML = `
+                               <p><strong>IP Address:</strong> ${log.ip}</p>
+                               <p><strong>Action:</strong> ${log.action}</p>
+                               <p><strong>Reason:</strong> ${log.reason}</p>
+                               <p><strong>Date & Time:</strong> ${log.timestamp}</p>`;
+                           logsContainer.appendChild(logBox);
+                       });
+                   })
+                   .catch(error => console.error('Error fetching logs:', error));
+           }
+       }
+ 
+       function stopScanning() {
+           scanning = false; // Stop fetching logs
+           document.getElementById('stopScanning').classList.add('active'); // Add active state
+           document.getElementById('continueScanning').classList.remove('active'); // Remove active state
+           document.getElementById('stopScanning').disabled = true; // Disable Stop button
+           document.getElementById('continueScanning').disabled = false; // Enable Continue button
+       }
+ 
+       function continueScanning() {
+           scanning = true; // Resume fetching logs
+           fetchLogs(); // Fetch logs immediately
+           document.getElementById('continueScanning').classList.add('active'); // Add active state
+           document.getElementById('stopScanning').classList.remove('active'); // Remove active state
+           document.getElementById('continueScanning').disabled = true; // Disable Continue button
+           document.getElementById('stopScanning').disabled = false; // Enable Stop button
+       }
+ 
+       // Fetch logs every X seconds (e.g., every 5 seconds)
+       setInterval(fetchLogs, 5000);
+       // Initial fetch
+       fetchLogs();
+    </script>
+ 
+ </body>
+ </html>
+ 

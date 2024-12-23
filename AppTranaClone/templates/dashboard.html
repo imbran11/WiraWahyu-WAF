@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+   <title>Wira Wahyu - Dashboard</title>
+
+   <style>
+    /* Styles for the header bar */
+    .header-bar {
+        background-color: #210053; /* Blue background */
+        color: white; /* White text */
+        padding: 15px; /* Padding around the text */
+        border-radius: 5px; /* Rounded corners */
+        margin-bottom: 20px; /* Space below the header */
+        text-align: left; /* Align text to the left */
+    }
+
+    .header-bar h1 {
+        font-size: 30px; /* Adjust font size to make it smaller */
+        margin: 0; /* Remove default margin */
+    }
+
+    /* Styles for the content area */
+    .content {
+        padding: 20px;
+        margin-left: 220px; /* Adjust according to sidebar width */
+    }
+
+    .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* Space between items */
+    }
+
+    .dashboard-item {
+        flex: 1 1 calc(33% - 20px); /* Three items per row with gap */
+        height: 300px; /* Fixed height for all boxes */
+        background-color: #f4f4f4; /* Light background for items */
+        border-radius: 5px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+</style>
+
+</head>
+<body>
+   <div class="sidebar">
+       <h2>Wira Wahyu</h2>
+       <ul>
+        <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Dashboard</a></li>
+        <li><a href="{{ url_for('overview') }}" class="{% if request.endpoint == 'overview' %}active{% endif %}">Overview</a></li>
+        <li><a href="{{ url_for('monitor') }}" class="{% if request.endpoint == 'monitor' %}active{% endif %}">Monitor</a></li>
+        <li><a href="{{ url_for('settings') }}" class="{% if request.endpoint == 'settings' %}active{% endif %}">Settings</a></li>
+        <li><a href="{{ url_for('manage') }}" class="{% if request.endpoint == 'manage' %}active{% endif %}">Manage</a></li>
+    </ul>
+   </div>
+
+   <div class="content">
+       <!-- Header Bar for Dashboard -->
+       <div class="header-bar">
+           <h1>Dashboard</h1>
+       </div>
+
+       <!-- Box Container for Dashboard Sections -->
+       <div class="box-container">
+           <!-- Dashboard Sections -->
+           <div class="dashboard-container">
+               <!-- Protection Trend (Pie Chart) -->
+               <div class="dashboard-item">
+                   <h2>Protection Trend</h2>
+                   <canvas id="protectionTrendChart"></canvas>
+               </div>
+
+               <!-- Detection Trend (Dual Axis Chart) -->
+               <div class="dashboard-item">
+                   <h2>Detection Trend</h2>
+                   <canvas id="detectionTrendChart"></canvas>
+               </div>
+
+               <!-- Vulnerability Status (Categorical) -->
+               <div class="dashboard-item">
+                   <h2>Vulnerability Status</h2>
+                   <canvas id="vulnerabilityStatusChart"></canvas>
+               </div>
+
+               <!-- Vulnerability Trend -->
+               <div class="dashboard-item">
+                   <h2>Vulnerability Trend</h2>
+                   <canvas id="vulnerabilityTrendChart"></canvas>
+               </div>
+
+           </div>
+       </div>
+
+       <!-- Include Chart.js for rendering charts -->
+       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+       <!-- Initialize charts with data -->
+       <script type="text/javascript">
+           // Sample data for each section with fluctuations
+           const protectionTrendData = [70, 30]; // Percentage of vulnerable web applications
+           const protectionLabels = ['Vulnerable', 'Not Vulnerable']; // Labels for pie chart
+           
+           // Detection trends based on realistic attack data
+           const sqlInjectionData = [1000, 2000, 3000, 4000, 5000, 6000, 7000]; // SQL Injection incidents
+           const directoryTraversalData = [500, 1000, 1200, 1500, 1800, 1600, 1700]; // Directory Traversal incidents
+           const xssAttackData = [300, 400, 500, 600, 700, 800, 900]; // XSS Attack incidents
+           const weakSecurityData = [8000, 7500, 7000, 6500, 6000, 5500]; // Weak Security incidents
+
+           // Logical Vulnerability Trend Data based on real data interpretation
+           const vulnerabilityTrendData = [10, 20, 35, 40, 55]; // Percentage of vulnerabilities over years
+           
+           // Categorical data for Vulnerability Status (High, Medium)
+           const vulnerabilityStatusData = [
+               { year: '2015', status: 'Medium' },
+               { year: '2016', status: 'High' },
+               { year: '2017', status: 'Medium' },
+               { year: '2018', status: 'Low' },
+               { year: '2019', status: 'High' },
+               { year: '2020', status: 'Medium' },
+               { year: '2021', status: 'Low' }
+           ];
+
+           // Function to convert categorical data to numerical for Chart.js
+           function getCategoricalData(data) {
+               return data.map(item => {
+                   switch (item.status) {
+                       case 'High': return 3; // High is at the top
+                       case 'Medium': return 2;
+                       case 'Low': return 1;
+                       default: return null;
+                   }
+               });
+           }
+
+           // Function to initialize charts
+           function initCharts() {
+               const protectionTrendCtx = document.getElementById('protectionTrendChart').getContext('2d');
+               const detectionTrendCtx = document.getElementById('detectionTrendChart').getContext('2d');
+               const vulnerabilityStatusCtx = document.getElementById('vulnerabilityStatusChart').getContext('2d');
+               const vulnerabilityTrendCtx = document.getElementById('vulnerabilityTrendChart').getContext('2d');
+
+               // Protection Trend Chart (Pie Chart)
+               new Chart(protectionTrendCtx,{
+                   type:'pie',
+                   data:{
+                       labels:protectionLabels,
+                       datasets:[{
+                           data:protectionTrendData,
+                           backgroundColor:['#FF6384','#36A2EB'], // Colors for vulnerable and not vulnerable
+                       }]
+                   },
+                   options:{
+                       responsive:true,
+                       plugins:{
+                           legend:{
+                               display:true // Enable legend
+                           }
+                       }
+                   }
+               });
+
+               // Detection Trend Chart (Dual Axis)
+               new Chart(detectionTrendCtx,{
+                   type:'line',
+                   data:{
+                       labels:['2015', '2016', '2017', '2018', '2019', '2020', '2021'],
+                       datasets:[
+                           {
+                               label:'SQL Injection Attacks',
+                               data:sqlInjectionData,
+                               borderColor:'rgba(255,99,132)',
+                               fill:false,
+                               yAxisID:'y-axis-1'
+                           },
+                           {
+                               label:'Directory Traversal Attacks',
+                               data:directoryTraversalData,
+                               borderColor:'rgba(54,162,235)',
+                               fill:false,
+                               yAxisID:'y-axis-1'
+                           },
+                           {
+                               label:'XSS Attacks',
+                               data:xssAttackData,
+                               borderColor:'rgba(75,192,192)',
+                               fill:false,
+                               yAxisID:'y-axis-1'
+                           },
+                           {
+                               label:'Weak Security Incidents',
+                               data:weakSecurityData,
+                               borderColor:'rgba(153,102,255)',
+                               fill:false,
+                               yAxisID:'y-axis-1'
+                           }
+                       ]
+                   },
+                   options:{
+                       responsive:true,
+                       scales:{
+                           yAxes:[{
+                               id:'y-axis-1',
+                               type:'linear',
+                               position:'left',
+                               ticks:{
+                                   beginAtZero:true,
+                                   callback:function(value) {
+                                       return value === 5000 ? "5k" : value === 1000 ? "1k" : "";
+                                   }
+                               }
+                           }]
+                       }
+                   }
+               });
+
+               // Vulnerability Status Chart (Categorical Line Graph)
+               new Chart(vulnerabilityStatusCtx,{
+                   type:'line',
+                   data:{
+                       labels:vulnerabilityStatusData.map(item => item.year),
+                       datasets:[{
+                           label:'Vulnerability Severity',
+                           data:getCategoricalData(vulnerabilityStatusData),
+                           borderColor:'rgba(153,102,255)',
+                           fill:false
+                       }]
+                   },
+                   options:{
+                       responsive:true,
+                       scales:{
+                           y:{
+                               beginAtZero:true,
+                               ticks:{
+                                   callback:function(value) {
+                                       switch(value) {
+                                           case 3:
+                                               return "High";
+                                           case 2:
+                                               return "Medium";
+                                           case 1:
+                                               return "Low";
+                                           default:
+                                               return "";
+                                       }
+                                   }
+                               }
+                           }
+                       }
+                   }
+               });
+
+               // Vulnerability Trend Chart (Bar Graph)
+               new Chart(vulnerabilityTrendCtx,{
+                   type:'bar',
+                   data:{
+                       labels:['2015', '2016', '2017', '2018', '2019'],
+                       datasets:[{
+                           label:'Vulnerability Events (%)',
+                           data:vulnerabilityTrendData,
+                           backgroundColor:'rgba(75,192,192)' // Set color to green
+                       }]
+                   },
+                   options:{
+                       responsive:true,
+                       scales:{
+                           y:{ 
+                             beginAtZero:true,
+                             ticks:{ 
+                                 callback:function(value) {
+                                     return value + "%"; 
+                                 } 
+                             } 
+                          } 
+                        }
+                    }
+                });
+            }
+
+            // Call initCharts when DOM is fully loaded
+            document.addEventListener("DOMContentLoaded", initCharts);
+       </script>
+
+   </div>
+</body>
+</html>
